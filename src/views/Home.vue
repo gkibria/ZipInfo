@@ -1,11 +1,16 @@
 <template>
   <div class="ion-page">
     <ion-header>
-      <ion-toolbar color="medium">
+      <ion-toolbar color="primary">
         <ion-title>Zip Information</ion-title>
+        <ion-buttons slot="primary">
+          <ion-button @click='showModal'>
+            <ion-icon slot="icon-only" name="help-circle"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content class="">
       <ZipSearch @get-zip='getZipInfo'/>
       <ZipInfo :info='info' @clear-info='clearInfo' />
     </ion-content>
@@ -15,6 +20,7 @@
 <script>
 import ZipSearch from '../components/ZipSearch'
 import ZipInfo from '../components/ZipInfo'
+import About from '../components/AboutModal'
 export default {
   name: 'home',
   components: {
@@ -26,13 +32,15 @@ export default {
     }
   },
   methods: {
-    async getZipInfo(zip){
-      // console.log(zip)
-      const res = await fetch(`https://api.zippopotam.us/us/${zip}`)
+    async getZipInfo(form){
+      // console.log(form)
+      this.showLoading()
+      const res = await fetch(`https://api.zippopotam.us/${form.country}/${form.zip}`)
       if(res.status == 404){
         this.showAlert()
       }
       this.info = await res.json()
+      this.hideLoading()
     },
     clearInfo(){
       this.info = null
@@ -40,9 +48,23 @@ export default {
     showAlert(){
         return this.$ionic.alertController.create({
             header: "Not Valid",
-            message: "Please enter a valid US zipcode",
+            message: "Please enter a valid zipcode",
             buttons: ["Ok"]
         }).then(a => a.present())
+    },
+    showLoading(){
+      return this.$ionic.loadingController.create({
+            message: "Please Wait...",
+            duration: 2000
+        }).then(a => a.present())
+    },
+    hideLoading(){
+      this.$ionic.loadingController.dismiss()
+    },
+    showModal(){
+      return this.$ionic.modalController.create({
+        component: About
+      }).then(m => m.present())
     }
   }
 }

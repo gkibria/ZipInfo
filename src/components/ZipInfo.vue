@@ -9,7 +9,7 @@
                 <ion-item>
                     <ion-label>
                         <strong>State: </strong>
-                        {{ info['places'][0]['state'] }} ({{ info['places'][0]['state abbreviation'] }})
+                        {{ info['places'][0]['state'] }}
                     </ion-label>
                 </ion-item>
                 <ion-item>
@@ -22,6 +22,12 @@
                     <ion-label>
                         <strong>Longitude: </strong>
                         {{ info['places'][0]['longitude'] }}
+                    </ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-label>
+                        <strong>Country: </strong>
+                        {{ info['country'] }}
                     </ion-label>
                 </ion-item>
             </ion-list>
