@@ -5,6 +5,7 @@ import router from './router'
 import '@ionic/core/css/core.css'
 import { addIcons } from "ionicons";
 import { star, trash, create, helpCircle } from "ionicons/icons";
+import './registerServiceWorker'
 
 Vue.use(Ionic)
 addIcons({

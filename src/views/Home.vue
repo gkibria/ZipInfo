@@ -1,6 +1,12 @@
 <template>
   <div class="ion-page">
     <ion-header>
+      <!-- <ion-toolbar color="dark" v-if="installToolbar">
+        <ion-title>Install this App?</ion-title>
+        <ion-buttons slot="primary">
+          <ion-button color="light" fill="solid" @click="showA2hp">YES</ion-button>
+        </ion-buttons>
+      </ion-toolbar> -->
       <ion-toolbar color="primary">
         <ion-title>Zip Information</ion-title>
         <ion-buttons slot="primary">
@@ -28,7 +34,9 @@ export default {
   },
   data(){
     return {
-      info: null
+      info: null,
+      installToolbar: false,
+      deferredPrompt: null
     }
   },
   methods: {
@@ -65,7 +73,33 @@ export default {
       return this.$ionic.modalController.create({
         component: About
       }).then(m => m.present())
+    },
+    showA2hp(){
+      // Show the prompt
+      this.deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      this.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        this.deferredPrompt = null;
+      })
+    },
+    a2hp(){
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        this.deferredPrompt = e;
+        // Update UI to notify the user they can add to home screen
+        this.installToolbar = true;
+      })
     }
+  },
+  mounted(){
+    this.a2hp()
   }
 }
 </script>
